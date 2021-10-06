@@ -2,10 +2,6 @@
 using MigraDoc.Rendering;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace Library
 {
@@ -35,16 +31,20 @@ pdf).
         [Obsolete]
         public void SaveTable(String direction, String documentName, List<String[,]> tables)
         {
+            if (!IsFull(tables)) {
+                throw new Exception("table have some empty mesh");
+            }
+
             var document = new Document();
 
             Section section = document.AddSection();
             Paragraph paragraph = section.AddParagraph(documentName);
-            paragraph.Format.SpaceAfter = "1cm";
-            paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.Style = "NormalTitle";
+            paragraph.Format.SpaceAfter = 5;
+            paragraph.Format.Alignment = ParagraphAlignment.Left;
 
             foreach (String[,] strings in tables) {
                 var table = document.LastSection.AddTable();
+                table.Borders.Width = 0.5;
                 for (int i =0;i< strings.GetLength(1);i++) {
                     table.AddColumn();
                 }
@@ -55,6 +55,8 @@ pdf).
                         row.Cells[j].AddParagraph(strings[i, j]);
                     }
                 }
+                Paragraph prg = section.AddParagraph();
+                prg.Format.SpaceAfter = 5;
             }
 
             PdfDocumentRenderer renderer = new PdfDocumentRenderer(true,
@@ -64,6 +66,15 @@ pdf).
             };
             renderer.RenderDocument();
             renderer.PdfDocument.Save(direction);
+        }
+
+        private Boolean IsFull(List<String[,]> tables) {
+            foreach (String[,] table in tables) {
+                foreach (String str in table) {
+                    if (str == null) return false;
+                }
+            }
+            return true;
         }
     }
 }
