@@ -20,7 +20,7 @@ namespace Laboratory1
                 new String[,]{ { "Liza1","Liza2","Liza3"},{ "Andrey1","Andrey2","Andrey3"},{"Stephan1","Stephan2","Stephan3" }, {"Jan1","Jan2","Jan3" } },
                 new String[,]{ { "1","2","3","4"},{ "11","22","33", "44"},{"111","222","333", "444"} }
             };
-            TableComponent tc = new TableComponent();
+            FirstTableComponent tc = new FirstTableComponent();
             tc.SaveTable("D://foulder.pdf", "Title", list);
 
             //Application.Run(new FormMain());

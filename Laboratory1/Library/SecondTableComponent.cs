@@ -1,4 +1,10 @@
-﻿namespace Library
+﻿using Library.HelperModels;
+using System.Collections.Generic;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.IO;
+
+namespace Library
 {
 
     /*У компонента должен быть публичный метод, который должен 
@@ -31,9 +37,42 @@
     public class SecondTableComponent
     {
 
-        public void SaveTable() {
-        
+        public void SaveTable(string nameOfFile, string nameOfDocument, List<TableColumnHelper> columns,
+            List<TableRowHelper> strings, List<Student> students, bool horisontalAlignment) {
+
+            PdfPTable table = horisontalAlignment ? CreateHorisontalTable(nameOfDocument,
+                columns, strings, students) : CreateVerticalTable(nameOfDocument,
+                columns, strings, students);
+            FileStream fs = new FileStream(nameOfFile, FileMode.Create);
+            Document document = new Document();
+            PdfWriter writer = PdfWriter.GetInstance(document, fs);
+            document.Open();
+            document.Add(table);
+            document.Close();
+            writer.Close(); 
+            fs.Close();
+
         }
 
+        private PdfPTable CreateHorisontalTable(string nameOfDocument, List<TableColumnHelper> columns,
+            List<TableRowHelper> strings, List<Student> Students) {
+
+            PdfPTable table = new PdfPTable(columns.Count);
+
+
+
+            return table;
+        }
+
+        private PdfPTable CreateVerticalTable(string nameOfDocument, List<TableColumnHelper> columns,
+            List<TableRowHelper> strings, List<Student> students)
+        {
+
+            PdfPTable table = new PdfPTable(columns.Count);
+
+
+
+            return table;
+        }
     }
 }
