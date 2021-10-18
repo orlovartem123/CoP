@@ -21,8 +21,12 @@ namespace Laboratory2
         для диаграммы, указание расположения легенды для диаграммы 
         (создать для этого перечисление), набор данных для диаграммы 
         (название серии и данные для графика).
+
+
+    Должна быть проверка 
+    на заполненность входных данных значениями.
          */
-    public class GistogramDocument
+    public class GistogramComponent
     {
 
         public void SaveGistogram(string nameOfFile, string nameOfDocument, string nameOfGistogram, 
@@ -67,6 +71,5 @@ namespace Laboratory2
             document.Draw(nameOfFile);
 
         }
-
     }
 }

@@ -28,8 +28,8 @@ pdf).
      */
     public class FirstTableComponent
     {
-        [Obsolete]
-        public void SaveTable(String direction, String documentName, List<String[,]> tables)
+
+        public void SaveTable(String direction, String documentName, List<string[,]> tables)
         {
             if (!IsFull(tables)) {
                 throw new Exception("table have some empty mesh");

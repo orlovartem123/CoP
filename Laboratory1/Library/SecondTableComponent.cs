@@ -43,7 +43,7 @@ namespace Library
             TableRowHelper[] rows, List<Student> students)
         {
             IsDataNotEmpty(students);
-
+            AreColumnsFull(columns);
 
             PdfPTable table = CreateTable(columns, rows, students);
             FileStream fs = new FileStream(nameOfFile, FileMode.Create);
