@@ -109,9 +109,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Library\Library.csproj">
+    <ProjectReference Include="..\Library\Laboratory2.csproj">
       <Project>{69F1FA3D-9384-45AA-8830-EEAEC5B5FEC0}</Project>
-      <Name>Library</Name>
+      <Name>Laboratory2</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

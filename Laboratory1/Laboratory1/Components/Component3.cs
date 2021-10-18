@@ -52,7 +52,7 @@ namespace Laboratory1.Components
     */
     public partial class Component3 : UserControl
     {
-        public int SelectedIndex
+        public int SelectedRow
         {
             set
             {
@@ -72,7 +72,7 @@ namespace Laboratory1.Components
             }
             get
             {
-                return dataGridView1.SelectedRows[0].Index;
+                return dataGridView1.CurrentCell.RowIndex;
             }
         }
 

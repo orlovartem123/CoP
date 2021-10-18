@@ -26,7 +26,7 @@ namespace Library
 Примеры создания документа в разных форматах (docx, xlsx, 
 pdf).
      */
-    public class TableComponent
+    public class FirstTableComponent
     {
         [Obsolete]
         public void SaveTable(String direction, String documentName, List<String[,]> tables)

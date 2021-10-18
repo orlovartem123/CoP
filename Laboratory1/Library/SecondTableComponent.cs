@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.IO;
+using System.Reflection;
+using System;
 
 namespace Library
 {
@@ -38,41 +40,102 @@ namespace Library
     {
 
         public void SaveTable(string nameOfFile, string nameOfDocument, List<TableColumnHelper> columns,
-            List<TableRowHelper> strings, List<Student> students, bool horisontalAlignment) {
+            TableRowHelper[] rows, List<Student> students)
+        {
+            IsDataNotEmpty(students);
 
-            PdfPTable table = horisontalAlignment ? CreateHorisontalTable(nameOfDocument,
-                columns, strings, students) : CreateVerticalTable(nameOfDocument,
-                columns, strings, students);
+
+            PdfPTable table = CreateTable(columns, rows, students);
             FileStream fs = new FileStream(nameOfFile, FileMode.Create);
             Document document = new Document();
             PdfWriter writer = PdfWriter.GetInstance(document, fs);
             document.Open();
+            document.Add(new Paragraph(nameOfDocument));
             document.Add(table);
             document.Close();
-            writer.Close(); 
+            writer.Close();
             fs.Close();
 
         }
 
-        private PdfPTable CreateHorisontalTable(string nameOfDocument, List<TableColumnHelper> columns,
-            List<TableRowHelper> strings, List<Student> Students) {
+        private PdfPTable CreateTable(List<TableColumnHelper> columns,
+            TableRowHelper[] rows, List<Student> students)
+        {
 
+            //Здесь получаем массив ширины колонок для таблицы и проверяем заполненность ширины 
+            float[] widths = new float[columns.Count];
+            bool widthsExist = true;
+            foreach (TableColumnHelper column in columns)
+            {
+                if (column.Width == null)
+                {
+                    widthsExist = false;
+                }
+            }
+            if (widthsExist)
+            {
+                int index = 0;
+                int sum = 0;
+                foreach (TableColumnHelper column in columns)
+                {
+                    widths[index] = (float)column.Width;
+                    sum += (int)column.Width;
+                    index++;
+                }
+            }
+
+            //Здесь мы проверяем наличие данных о высоте колонок
+            bool heightsExist;
+            heightsExist = rows.Length == 2 ? true : false;
+            foreach (TableRowHelper row in rows)
+            {
+                if (row.Height == null)
+                {
+                    heightsExist = false;
+                }
+            }
+
+            //Если есть ширина, то добавляем параметры
             PdfPTable table = new PdfPTable(columns.Count);
+            if (widthsExist) {
+                table.LockedWidth = true;
+                table.SetTotalWidth(widths);
+            }
 
+            //Добавляем столбцы по данным
+            foreach (TableColumnHelper column in columns)
+            {
+                PdfPCell cell = new PdfPCell(new Phrase(column.Name));
+                if (heightsExist) cell.MinimumHeight = (float)rows[0].Height;
+                table.AddCell(cell);
+            }
 
+            //Добавляем ячейки по данным
+            foreach (Student student in students)
+            {
+                foreach (TableColumnHelper column in columns)
+                {
+                    PropertyInfo propertyInfo = student.GetType().GetProperty(column.PropertyName);
+                    string value = propertyInfo.GetValue(student).ToString();
+                    PdfPCell cell = new PdfPCell(new Phrase(value));
+                    if (heightsExist) cell.MinimumHeight = (float)rows[1].Height;
+                    table.AddCell(cell);
+                }
+            }
 
             return table;
         }
 
-        private PdfPTable CreateVerticalTable(string nameOfDocument, List<TableColumnHelper> columns,
-            List<TableRowHelper> strings, List<Student> students)
-        {
+        private void IsDataNotEmpty(List<Student> students) {
+            if (students.Count == 0) throw new Exception("list is empty");
+        }
 
-            PdfPTable table = new PdfPTable(columns.Count);
-
-
-
-            return table;
+        private void AreColumnsFull(List<TableColumnHelper> columnHelpers) {
+            foreach (TableColumnHelper column in columnHelpers) {
+                if (column.Name == null || column.PropertyName==null) {
+                    throw new Exception("fullfill the columnHelpers");
+                }
+            }
         }
     }
 }
