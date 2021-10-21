@@ -103,9 +103,11 @@ namespace Library
             }
 
             //Добавляем столбцы по данным
+            BaseFont bfTimes = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, false);
+            Font font = new Font(bfTimes, 16, Font.BOLD);
             foreach (TableColumnHelper column in columns)
             {
-                PdfPCell cell = new PdfPCell(new Phrase(column.Name));
+                PdfPCell cell = new PdfPCell(new Phrase(column.Name, font));
                 if (heightsExist) cell.MinimumHeight = (float)rows[0].Height;
                 table.AddCell(cell);
             }
@@ -121,6 +123,13 @@ namespace Library
                     if (heightsExist) cell.MinimumHeight = (float)rows[1].Height;
                     table.AddCell(cell);
                 }
+            }
+
+            foreach (var row in table.Rows) {
+                PdfPCell cell = row.GetCells()[0];
+                string text = cell.Phrase.Content;
+                PdfPCell newcell = new PdfPCell(new Phrase(text,font));
+                row.GetCells()[0] = newcell;
             }
 
             return table;
