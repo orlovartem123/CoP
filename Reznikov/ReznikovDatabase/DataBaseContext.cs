@@ -15,5 +15,6 @@ MultipleActiveResultSets=True;");
         }
         public virtual DbSet<Student> Students { set; get; }
         public virtual DbSet<AverageMark> AverageMarks { set; get; }
+        public virtual DbSet<EducationForm> EducationForms { set; get; }
     }
 }
