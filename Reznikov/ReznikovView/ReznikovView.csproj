@@ -234,6 +234,7 @@
     <Compile Include="TeammatesComponents\InputControl.designer.cs">
       <DependentUpon>InputControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="TeammatesComponents\LegendPosition.cs" />
     <Compile Include="TeammatesComponents\UniversityComboBox.cs">
       <SubType>UserControl</SubType>
     </Compile>

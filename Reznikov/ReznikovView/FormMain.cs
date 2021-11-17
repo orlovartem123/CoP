@@ -50,7 +50,7 @@ namespace ReznikovView
             }
             if (e.KeyCode == Keys.C && e.Control)
             {
-                SaveToWord();  
+                SaveToWord();
             }
             if (e.KeyCode == Keys.R && e.Control)
             {
@@ -70,12 +70,30 @@ namespace ReznikovView
 
         private void SaveToWord()
         {
-        
-            using (var dialog = new SaveFileDialog { Filter = "pdf|*.pdf" })
+            DiagramWord diagram = new DiagramWord();
+            Dictionary<string, int[]> objects = new Dictionary<string, int[]>();
+
+            List<StudentViewModel> students = logic.Read(null);
+            int[] marks;
+            students.ForEach(rec =>
+            {
+                marks = new int[rec.AverageMarks.Count];
+
+                int i = 0;
+                foreach (KeyValuePair<string, float> keyValue in rec.AverageMarks)
+                {
+                    marks[i] = (int)Math.Round(keyValue.Value);
+                    i++;
+                }
+
+                objects.Add(rec.FIO, marks);
+            });
+
+            using (var dialog = new SaveFileDialog { Filter = "docx|*.docx" })
             {
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    
+                    diagram.CreateDoc(dialog.FileName, "Обучающиеся", "Список", objects, LegendPosition.Bottom);
                 }
             }
         }
@@ -91,16 +109,17 @@ namespace ReznikovView
         {
             ExcelComponent excelComponent = new ExcelComponent();
             List<StudentInnerClass> students = new List<StudentInnerClass>();
-            logic.Read(null).ForEach(rec=>students.Add(new StudentInnerClass { 
-                Id=rec.Id,
-                FIO=rec.FIO,
-                EducationForm=rec.EducationForm,
-                ReceiptDate=rec.ReceiptDate
+            logic.Read(null).ForEach(rec => students.Add(new StudentInnerClass
+            {
+                Id = rec.Id,
+                FIO = rec.FIO,
+                EducationForm = rec.EducationForm,
+                ReceiptDate = rec.ReceiptDate
             }));
 
             var dict = new Dictionary<string, int[]>();
             var array = new int[] { 2, 3 };
-            var arrayHeader = new string[] { "Id", "ФИО", "Форма обучения", "Дата поступления"};
+            var arrayHeader = new string[] { "Id", "ФИО", "Форма обучения", "Дата поступления" };
             var arrayHeight = new int[] { 20, 30, 20, 20 };
 
             dict.Add("Обучение", array);
@@ -119,16 +138,19 @@ namespace ReznikovView
             FirstTableComponent TableComponent = new FirstTableComponent();
 
             List<StudentViewModel> students = logic.Read(null);
-            string[,] tables = new string[students.Count,6];
+            string[,] tables = new string[students.Count, 6];
 
-            for (int i=0;i<students.Count;i++) {
+            for (int i = 0; i < students.Count; i++)
+            {
                 int j = 0;
                 Dictionary<string, float> dictionary = students[i].AverageMarks;
-                foreach (KeyValuePair<string, float> keyValue in dictionary) {
+                foreach (KeyValuePair<string, float> keyValue in dictionary)
+                {
                     tables[i, j] = keyValue.Value.ToString();
                     j++;
                 }
-                for (; j < tables.GetLength(1); j++) {
+                for (; j < tables.GetLength(1); j++)
+                {
                     tables[i, j] = " ";
                 }
             }
@@ -164,7 +186,7 @@ namespace ReznikovView
                 try
                 {
                     StudentViewModel model = universityListBox1.GetItem<StudentViewModel>();
-                    logic.Delete(new StudentBindingModel { Id=model.Id});
+                    logic.Delete(new StudentBindingModel { Id = model.Id });
                 }
                 catch (Exception ex)
                 {
